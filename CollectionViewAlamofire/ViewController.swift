@@ -10,6 +10,22 @@ import UIKit
 import Alamofire
 import AlamofireImage
 
+struct IDS {
+    var serviceID: Int
+    var categoryID: Int
+    
+}
+
+
+//=================STRUC FOR THE ARRAY IDS IN THE SERVICES=========
+//struct ServiceArrayIDS {
+//    var ID: Int
+//    var category_ID: Int
+//}
+
+
+
+
 
 
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
@@ -38,66 +54,99 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         case tabFavourites
         
     }
-
-
-
+    
+    
+    
     @IBOutlet weak var faketabbar:      UIButton!
     @IBOutlet weak var featuredButton:  UIButton!
     @IBOutlet weak var favouriteButton: UIButton!
     
     @IBOutlet weak var collectionView:           UICollectionView!
     @IBOutlet weak var horizontalcollectionView: UICollectionView!
-        
+    
     @IBOutlet weak var navBar: UINavigationBar!
     
+    //=======array==================================
+    var mainArray: [IDS] = [] //holding ids of every section in any category
+    var favouritesArray: [IDS] = []
+    //=============================================
+    
+    
     //=============For Categories===============
-    let categoryLink = "https://ichuzz2work.com/api/services/categories"
-    
-    //==========For Services=========
-     let link = "https://ichuzz2work.com/api/services"
-    
-    var categoryImages: [String] = []    // variables and constants ALWAYS START WITH a lowercase letter
+    let categoryLink = "https://api.ichuzz2work.com/api/services/categories"
+    var categoryImages: [String] = []
+    // variables and constants ALWAYS START WITH a lowercase letter
     var categoryTitle: [String] = []    // UPPERCASE letters are reserved for names of classes
-    
     var categoryThumbnails: NSMutableArray = NSMutableArray()
-
-    let iPhone8PlusHeight: CGFloat = 736.0
+  
     
+    
+    //=================================================================================
+    
+
+    
+    
+    //==========For Services========================
+    let link = "https://api.ichuzz2work.com/api/services"
+    //============For Services===================
+    var serviceImages: [String] = []
+    var serviceTitle:  [String] = []
+    var  serviceimageLink: [String] = []
+    var serviceThumbnails: NSMutableArray = NSMutableArray()
+   
+    
+    var mainArrayServiceIDs:[Int] = [] //======service id
+    var mainArrayCategoryIDs:[Int] = [] //category id
+    
+    //==================================================================================
+    
+    
+    let iPhone8PlusHeight: CGFloat = 736.0
     var tabButtonMode: Int = myTabButtons.tabAllServices.rawValue // Default mode
     
     var vertCVExpanded:   CGRect = CGRect()
     var vertCVCompressed: CGRect = CGRect()
-
+    
     //==============cell size for category(ie, horizontal scroll view======
     let horizontalCVCellSize: CGSize = CGSize( width: 88, height: 90 )
     
     let myCellSize: CGSize = CGSize( width: 149, height: 148) // Vertical CV cell size
     
-    //============For Services===================
-    var serviceImages: [String] = []
-    var serviceTitle:  [String] = []
     
-    var serviceThumbnails: NSMutableArray = NSMutableArray()
-        
-   
+    
+    
     //===========vertical spacing for the cell
     let myVertCVSpacing:  CGFloat = CGFloat( 8.0 )
-        //=========horizonatl spacing for the cell===
+    //=========horizonatl spacing for the cell===
     let myHorizCVSpacing: CGFloat = CGFloat( 4.0 )
     
     let buttonFontSize:           CGFloat = CGFloat( 15.0 )
     let buttonEmphasizedFontSize: CGFloat = CGFloat( 18.0 )
-
+    
+    
+    
+    
+    
+    
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
+    
+    
+    
+    
+    
     override func viewDidLoad() {
         
         super.viewDidLoad() // ‼️‼️‼️‼️‼️  This should ALWAYS BE THE FIRST CODE in viewDidLoad  ‼️‼️‼️‼️‼️‼️‼️‼️‼️
-
+        
+        //creatng instance of the ServiceArrayIDS
+      //  let serviceArrayIDS = ServiceArrayIDS(id: Int, category_id: Int)
+        
+        
         var tempNavBarRect: CGRect = navBar.frame
-
+        
         if self.view.frame.size.height <= iPhone8PlusHeight {
             
             tempNavBarRect.origin.y = 20
@@ -113,38 +162,46 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             
             tabBarRect.origin.y = newYOrigin
             faketabbar.frame    = tabBarRect
-
+            
             tabBarRect.origin.x += tabBarRect.size.width
             tabBarRect.origin.y  = newYOrigin
             featuredButton.frame = tabBarRect
-
+            
             tabBarRect.origin.x  += tabBarRect.size.width
             tabBarRect.origin.y   = newYOrigin
             favouriteButton.frame = tabBarRect
-
+            
         }
+        
+        
+        
+        
+        
         
         navBar.topItem!.title = "ichuzz2work.com"
         
         horizontalcollectionView.backgroundColor = UIColor(named: "myGreenTint")
-
+        
         setTabBarButtonColors()
-                
+        
         //-----------------------------------------------------------------------------------------------------
         
         LoadCategories()
         LoadServices()
-
+        // getImageURL()
+        
         //-----------------------------------------------------------------------------------------------------
-
+        
         horizontalcollectionView.delegate   = self  //=======for Horizontal CV========
         horizontalcollectionView.dataSource = self
         
         collectionView.delegate             = self    //=======for vertical CV====
         collectionView.dataSource           = self
-
+        
+        
+        
         //-----------------------------------------------------------------------------------------------------
-
+        
         var tempHCV: CGRect = horizontalcollectionView.frame
         
         tempHCV.origin.x    = 0
@@ -162,27 +219,30 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         tempRect.origin.x    = CGFloat( roundf( Float( ( self.view.frame.size.width - tempRect.size.width ) / 2.0) ) ) //centers the collection view horizonatlly
         
         collectionView.frame = tempRect
-
+        
         vertCVCompressed = tempRect // Calculate expanded and compressed frames once
-
+        
         tempRect.size.height = ( horizontalcollectionView.frame.size.height + horizontalcollectionView.frame.origin.y ) - collectionView.frame.origin.y
         
         vertCVExpanded = tempRect // Height is the only difference
-
+        
+        
+        
+        
     }
     
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     func setTabBarButtonColors() {
         
         switch tabButtonMode {
             
         case myTabButtons.tabAllServices.rawValue:
-                        
+            
             faketabbar.titleLabel?.font = UIFont.boldSystemFont(ofSize: buttonEmphasizedFontSize )
             faketabbar.setTitleColor( UIColor(named: "myGreenTint"), for: UIControl.State.normal )
             faketabbar.backgroundColor = .white
-    
+            
             featuredButton.titleLabel?.font = UIFont.systemFont(ofSize: buttonFontSize )
             featuredButton.setTitleColor( .white, for: UIControl.State.normal )
             featuredButton.backgroundColor = UIColor(named: "myGreenTint")
@@ -192,13 +252,13 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             favouriteButton.backgroundColor = UIColor(named: "myGreenTint")
             
             break
-
+            
         case myTabButtons.tabFeatured.rawValue:
             
             faketabbar.titleLabel?.font = UIFont.systemFont(ofSize: buttonFontSize )
             faketabbar.setTitleColor( .white, for: UIControl.State.normal )
             faketabbar.backgroundColor = UIColor(named: "myGreenTint")
-    
+            
             featuredButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: buttonEmphasizedFontSize )
             featuredButton.setTitleColor( UIColor(named: "myGreenTint"), for: UIControl.State.normal )
             featuredButton.backgroundColor = .white
@@ -208,13 +268,13 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             favouriteButton.backgroundColor = UIColor(named: "myGreenTint")
             
             break
-
+            
         case myTabButtons.tabFavourites.rawValue:
             
             faketabbar.titleLabel?.font = UIFont.systemFont(ofSize: buttonFontSize )
             faketabbar.setTitleColor( .white, for: UIControl.State.normal )
             faketabbar.backgroundColor = UIColor(named: "myGreenTint")
-    
+            
             featuredButton.titleLabel?.font = UIFont.systemFont(ofSize: buttonFontSize )
             featuredButton.setTitleColor( .white, for: UIControl.State.normal )
             featuredButton.backgroundColor = UIColor(named: "myGreenTint")
@@ -224,7 +284,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             favouriteButton.backgroundColor = .white
             
             break
-
+            
         default:
             
             return
@@ -233,8 +293,24 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     @IBAction func menuButtonTapped(_ sender: UIBarButtonItem) {
         
         print("Menu button tapped!")
@@ -242,15 +318,17 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     @IBAction func searchButtonTapped(_ sender: UIBarButtonItem) {
         
         print("Search button tapped!")
-
+        
     }
     
+    
+    
     //🔷🔷🔷🔷🔷🔷🔷🔷  ACTIONS FOR THE TAB BAR BUTTONS  🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     @IBAction func AllServicesAction(_ sender: UIButton) {
         
         if tabButtonMode == myTabButtons.tabAllServices.rawValue {
@@ -260,11 +338,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
         
         print("All ServicesAction Button tapped")
-
+        
         tabButtonMode = myTabButtons.tabAllServices.rawValue
-
+        
         setTabBarButtonColors()
-                
+        
         collectionView.frame = vertCVCompressed
         
         horizontalcollectionView.isHidden = false
@@ -272,10 +350,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     //======Featured Action Button=====
     @IBAction func FeaturedAction(_ sender: UIButton) {
-
+        
         if tabButtonMode == myTabButtons.tabFeatured.rawValue {
             
             return // Do nothing if already in that mode
@@ -283,34 +361,55 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
         
         if !horizontalcollectionView.isHidden {
-        
+            
             horizontalcollectionView.isHidden = true
             
             collectionView.frame = vertCVExpanded
-
+            
         }
-
+        
         tabButtonMode = myTabButtons.tabFeatured.rawValue
-
+        
         setTabBarButtonColors()
         
         print("Featured Button tapped")
         
     }
     
+    
+    
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     @IBAction func vCVFaveButtonTapped(_ sender: UIButton) {
         
         print("Favourites Button \(String(sender.tag)) pressed!")
-
+        
     }
     
     @IBAction func vCVShareButtonTapped(_ sender: UIButton) {
-
-        print("Share Button \(String(sender.tag)) pressed!")
-
+        
+        let activityVC = UIActivityViewController(activityItems: [link], applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = self.view
+        
+        // Anything you want to exclude
+        activityVC.excludedActivityTypes = [
+            // UIActivity.ActivityType.postToWeibo,
+            //UIActivity.ActivityType.print,
+            // UIActivity.ActivityType.assignToContact,
+            UIActivity.ActivityType.saveToCameraRoll,
+            UIActivity.ActivityType.addToReadingList
+            //        UIActivity.ActivityType.postToFlickr,
+            //        UIActivity.ActivityType.postToVimeo,
+            //        UIActivity.ActivityType.postToTencentWeibo
+        ]
+        
+        self.present(activityVC, animated: true, completion: nil)
+        
     }
+    
+    
+    
+    
     
     //=================for favourite Action Button===
     @IBAction func FavouriteAction(_ sender: UIButton) {
@@ -321,49 +420,73 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             
         }
         
-        if !horizontalcollectionView.isHidden {
         
+        if !horizontalcollectionView.isHidden {
+            
             horizontalcollectionView.isHidden = true
             
             collectionView.frame = vertCVExpanded
-
+            
         }
         
         tabButtonMode = myTabButtons.tabFavourites.rawValue
-
+        
         setTabBarButtonColors()
         
         print("favourite Button tapped")
         
     }
     
+    
+    
+    
+    
+    
+    
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         //=======for horizonatl collection view=====
         if (collectionView == horizontalcollectionView) {
-
+            
             return categoryImages.count
-
+            
         } else {
-
+            
             //=======for vertical collection view=====
             return serviceImages.count
-
+            
         }
-
+        
     }
     
+    
+    //========================added function===================
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if ( collectionView == horizontalcollectionView ) {
             
-            print("Horizontal Cell #\(String(indexPath.item)) selected!")
+            //=============wanted to compare the indices of category id it has the same value with servicecategory id, then update the vertical collection view for that particular service
+            //            if [mainArrayCategoryIDs] == [mainArrayServiceIDs] {
+            //
+            //            }
+            
+            
+           
+            
+            
+            //==============================GETTING THE DATA=============
+           // =========FAILING TO GET HOW I CAN BUILD THIS LOGIC UP========
+            
             
         }
         
+        
+        
     }
+    
+    
     
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
     
@@ -377,6 +500,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             
             horizontalcell.categoryLabel.text = self.categoryTitle[indexPath.item]
             
+            
             if categoryThumbnails.object(at: indexPath.item) is UIImage {
                 
                 // ❌❌❌❌❌  DO NOT DOWNLOAD AND SCALE THE IMAGE IF WE ALREADY HAVE IT  ❌❌❌❌❌
@@ -386,18 +510,19 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 print("Image retrieved from categoryThumbnails array") // Remove this
                 
             } else {
-
+                
                 let Categoryimagestring = self.categoryImages[indexPath.item] //getting image for category
                 
                 //======replacing a space in a the image string====
-                let newCategoryimagetstring = Categoryimagestring.replacingOccurrences(of: "", with: "%20", options: .literal)
+                let newCategoryimagetstring = Categoryimagestring.replacingOccurrences(of: " ", with: "%20", options: .literal)
                 
                 if let categoryimageurl = newCategoryimagetstring as? String {
-
+                    
                     Alamofire.request("https://api.ichuzz2work.com/" + categoryimageurl).responseImage { (response) in
-
+                        
+                        
                         if let categoryImage = response.result.value {
-
+                            
                             DispatchQueue.main.async {
                                 
                                 let categorysize        = horizontalcell.categoryImageView.frame.size
@@ -407,19 +532,27 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                                 
                                 // Replace placeholder string with actual image
                                 self.categoryThumbnails.replaceObject( at: indexPath.item, with: scaledCategoryImage )
-
+                                
                             }
-
+                            
                         }
-
+                        
                     }
-
+                    
                 }
                 
             }
             
+            
             return horizontalcell
         }
+        
+        
+        
+        
+        
+        
+        
         
         //================for vertical scroll collection view===========
         
@@ -428,7 +561,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         cell.servicelabel.text = self.serviceTitle[indexPath.item]
         cell.servicelabel.layer.cornerRadius = 6
         cell.servicelabel.clipsToBounds      = true
-
+        
         let imageString = self.serviceImages[indexPath.item]
         
         cell.bookNowButtonOutlet.layer.cornerRadius = 6
@@ -441,26 +574,31 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         if serviceThumbnails.object(at: indexPath.item) is UIImage {
             
             // ❌❌❌❌❌  DO NOT DOWNLOAD AND SCALE THE IMAGE IF WE ALREADY HAVE IT  ❌❌❌❌❌
-
+            
             cell.serviceimage.image = serviceThumbnails.object( at: indexPath.item ) as? UIImage
             
             print("Image retrieved from serviceThumbnails array") // Remove this
             
-        } else {
+        }
+            
+            
+            
+            
+            
+        else {
             
             //======replacing a space in an image URL with %20
             let newString = imageString.replacingOccurrences(of: " ", with: "%20", options: .literal, range: nil)
             
             if let imageUrl = newString as? String {
                 
-                //https://ichuzz2work.com/api/services
-
+                
                 Alamofire.request("https://api.ichuzz2work.com/" + imageUrl).responseImage { (response) in
-
+                    
                     if let image = response.result.value  {
-
+                        
                         DispatchQueue.main.async {
-
+                            
                             let size        = CGSize(width: 150.0, height: 150.0)
                             let scaledImage = image.af_imageScaled(to: size) //scale the size gisregarding the aspect ratio
                             
@@ -473,41 +611,64 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                         
                     }
                     
+                    
+                    
+                    
                 }
                 
             }
+            
+            
             
         }
         
         return cell
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //🔷🔷🔷🔷🔷🔷  Load services in the vertical scroll view  🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         if ( collectionView == horizontalcollectionView ) {
-
+            
             return horizontalCVCellSize
-
+            
         } else {
-
+            
             return myCellSize
-
+            
         }
         
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //🔷🔷🔷🔷🔷  Load services in the vertical scroll view  🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     func LoadServices() {
         
         Alamofire.request(link, method: .get)
-
+            
             .validate()
-
+            
             .responseJSON { (response) in
-
+                
                 guard response.result.isSuccess else {
                     print("Error with response: \(String(describing: response.result.error))")
                     return
@@ -523,15 +684,22 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     return
                 }
                 
+                
                 for serviceData in dictData {
                     
                     self.serviceImages.append(serviceData["image"] as! String)
                     self.serviceTitle.append(serviceData["name"] as! String)
-                
                     self.serviceThumbnails.add("placeholder") // Replace later with actual UIImage
-
+                    
+                    //===========Getting and storing the category_id and id(service id) in the service data====
+                    self.mainArrayCategoryIDs.append(serviceData["category_id"] as! Int )
+                    self.mainArrayServiceIDs.append(serviceData["id"] as! Int  )
+                    
+                    
+                    
                 }
-                                
+                
+                
                 self.collectionView.reloadData()
                 
                 return
@@ -540,16 +708,19 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
     }
     
+    
+    
+    
     //🔷🔷🔷🔷🔷🔷  Load categories in the horizonalscroll view  🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
-
+    
     func LoadCategories() {
         
         Alamofire.request(categoryLink, method: .get)
             
             .validate()
-
+            
             .responseJSON { (response) in
-
+                
                 guard response.result.isSuccess else {
                     print("Error with response: \(String(describing: response.result.error))")
                     return
@@ -569,7 +740,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     
                     self.categoryImages.append(categoryData["image"] as! String)
                     self.categoryTitle.append(categoryData["name"] as! String)
-
+                  
                     self.categoryThumbnails.add("placeholder") // Replace later with actual UIImage
                     
                 }
@@ -580,10 +751,17 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 
         }
         
+        //========end of fun to Load categories============
+        
+        
+        
     }
     
+    
+    
+    
     @IBAction func bookNowTapped(_ sender: UIButton) {
-
+        
         print("Book Now \(String(sender.tag)) pressed!")
         
     }
@@ -597,44 +775,52 @@ extension ViewController : UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         
         if ( collectionView == horizontalcollectionView ) {
-
+            
             return UIEdgeInsets(top: myHorizCVSpacing, left: myHorizCVSpacing, bottom: myHorizCVSpacing, right: myHorizCVSpacing)
-
+            
         } else {
-
+            
             return UIEdgeInsets(top: myVertCVSpacing, left: myVertCVSpacing, bottom: myVertCVSpacing, right: myVertCVSpacing)
-
+            
         }
         
     }
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         
         if ( collectionView == horizontalcollectionView ) {
-
+            
             return myHorizCVSpacing
-
+            
         } else {
-
+            
             return myVertCVSpacing
-
+            
         }
-    
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-
+        
         if ( collectionView == horizontalcollectionView ) {
-
+            
             return myHorizCVSpacing
-
+            
         } else {
-
+            
             return myVertCVSpacing
-
+            
         }
-
+        
     }
+    
+    
+    
+    
+    
+    
     
 }
 
