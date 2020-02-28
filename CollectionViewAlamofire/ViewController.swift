@@ -703,7 +703,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     //=======when i used struct vertical collection view does not load======
                     
                     //self.mainArrayCategoryIDs.append(serviceData["category_id"] as! Int )
-                    self.mainArrayServiceIDs.append(serviceData["id"] as! ServiceArrayIDS  )
+                    self.mainArrayCategoryIDs.append(serviceData["category_id"] as! ServiceArrayIDS  )
                     
                     
                 }
