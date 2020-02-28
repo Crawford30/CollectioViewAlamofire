@@ -18,10 +18,10 @@ struct IDS {
 
 
 //=================STRUC FOR THE ARRAY IDS IN THE SERVICES=========
-//struct ServiceArrayIDS {
-//    var ID: Int
-//    var category_ID: Int
-//}
+struct ServiceArrayIDS {
+    var id: Int
+    var category_id: Int
+}
 
 
 
@@ -95,8 +95,13 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var serviceThumbnails: NSMutableArray = NSMutableArray()
    
     
-    var mainArrayServiceIDs:[Int] = [] //======service id
-    var mainArrayCategoryIDs:[Int] = [] //category id
+   // var mainArrayServiceIDs:[Int] = [] //======service id
+   // var mainArrayCategoryIDs:[Int] = [] //category id
+    
+    //===========ussing struct==
+    var mainArrayServiceIDs:[ServiceArrayIDS] = [] //======service id
+  var mainArrayCategoryIDs:[ServiceArrayIDS] = [] //category id
+    
     
     //==================================================================================
     
@@ -692,9 +697,13 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     self.serviceThumbnails.add("placeholder") // Replace later with actual UIImage
                     
                     //===========Getting and storing the category_id and id(service id) in the service data====
-                    self.mainArrayCategoryIDs.append(serviceData["category_id"] as! Int )
-                    self.mainArrayServiceIDs.append(serviceData["id"] as! Int  )
+                    //self.mainArrayCategoryIDs.append(serviceData["category_id"] as! Int )
+                    self.mainArrayServiceIDs.append(serviceData["id"] as! ServiceArrayIDS  )
                     
+                    //=======when i used struct vertical collection view does not load======
+                    
+                    //self.mainArrayCategoryIDs.append(serviceData["category_id"] as! Int )
+                    self.mainArrayServiceIDs.append(serviceData["id"] as! ServiceArrayIDS  )
                     
                     
                 }
