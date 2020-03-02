@@ -80,6 +80,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var categoriesArray: [ categoryID ] = []
     var favouritesArray: [ serviceID ]  = []
     
+
+    
     
     
     
@@ -106,6 +108,13 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     let link = "https://api.ichuzz2work.com/api/services"
     
     var serviceThumbnails: NSMutableArray = NSMutableArray()
+    
+    //====================FEATURED====================
+    let featuredLink = "https://ichuzz2work.com/api/services/featured"
+    var featuredTitle: [String] = []
+    var featuredImage: [String] = []
+    //=============================================================
+    
     
     
     //==================================================================================
@@ -143,9 +152,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         //-----------------------------------------------------------------------------------------------------
         
         LoadCategories()
-        
         LoadServices()
         
+        LoadFeatured()
         //-----------------------------------------------------------------------------------------------------
         
         horizontalcollectionView.delegate   = self
@@ -217,6 +226,16 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         setTabBarButtonColors()
         
         print("Featured Button tapped")
+        
+        
+    
+        //===============GETTING THE FEATURED DATA========
+        if collectionView != horizontalcollectionView {
+             LoadFeatured()
+            
+            
+        }
+        
         
     }
     
@@ -746,9 +765,56 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 
         }
         
+    
+       
+        }
         //========end of fun to Load categories============
+    
+    
+    //===================FUNCT TO LOAD FEATURED=====
+        func LoadFeatured() {
+            
+            
+            Alamofire.request(featuredLink, method: .get).validate().responseJSON { (response) in
+                
+                
+                guard response.result.isSuccess else {
+                                   print("Error with response: \(String(describing: response.result.error))")
+                                   return
+                               }
+                               
+                               guard let featuredDict = response.result.value as? Dictionary <String,AnyObject> else {
+                                   print("Error with dictionary: \(String(describing: response.result.error))")
+                                   return
+                               }
+                               
+                               guard let dicData = featuredDict["data"] as? [Dictionary <String,AnyObject>] else {
+                                   print("Error with dictionary data: \(String(describing: response.result.error))")
+                                   return
+                               }
+                
+                for featuredData in dicData {
+                    
+                    self.featuredTitle.append(featuredData["name"] as! String)
+                    self.featuredImage.append(featuredData["image"] as! String)
+                    //=======part for featured Thubnails
+                    
+                    
+        
+                }
+                
+                self.collectionView.reloadData()
+                return
+                
+                
+                
+                
+                
+            }
+                   
         
     }
+    //===========End of Load featured==============
     
     @IBAction func bookNowTapped(_ sender: UIButton) {
         
