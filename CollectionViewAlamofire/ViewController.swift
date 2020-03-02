@@ -73,6 +73,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     @IBOutlet weak var navBar: UINavigationBar!
     
+    //========naviagtion title==
+    @IBOutlet weak var navBarTitle: UINavigationItem!
+    
     
     //=======array=============================================================================================
     
@@ -80,7 +83,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var categoriesArray: [ categoryID ] = []
     var favouritesArray: [ serviceID ]  = []
     
-
+    //=========TITLES=======
+    let navTitle = ["All services", "Featured Services", "Favourite servces"]
+    
+    
     
     
     
@@ -193,6 +199,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         print("All ServicesAction Button tapped")
         
+        
         tabButtonMode = myTabButtons.tabAllServices.rawValue
         
         setTabBarButtonColors()
@@ -200,6 +207,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         collectionView.frame = vertCVCompressed
         
         horizontalcollectionView.isHidden = false   // Show Categories collectionView
+        
+        
+        //======set its navigation bar title
+        self.navBar.topItem!.title = navTitle[0]
+        //self.navigationItem.title = navTitle[0]
         
     }
     
@@ -227,11 +239,14 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         print("Featured Button tapped")
         
+        //======setting it title===
+       // self.navigationItem.title = navTitle[1]
+          self.navBar.topItem!.title = navTitle[1]
         
-    
+        
         //===============GETTING THE FEATURED DATA========
         if collectionView != horizontalcollectionView {
-             LoadFeatured()
+            LoadFeatured()
             
             
         }
@@ -344,7 +359,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
     }
     
-    //=================  for favourite Action Button  =========================================================
+    //=================  for favourite Action Button=======================================================
     
     @IBAction func FavouriteAction(_ sender: UIButton) {
         
@@ -367,6 +382,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         setTabBarButtonColors()
         
         print("favourite Button tapped")
+        
+        //======setting it title=============================
+       // self.navigationItem.title = navTitle[2]
+          self.navBar.topItem!.title = navTitle[2]
         
     }
     
@@ -436,7 +455,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                         for currentCategoryID in dictServiceData {
                             // print(indexPath.item)
                             // print(currentService)
-                           
+                            
                             
                             //========GETTING THE CATEGORY ID=========
                             self.catID.append(currentCategoryID["category_id"] as! Int)
@@ -502,13 +521,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                         return
                         
                 }
-                
-                
-                
-                
-                
-                
-                
                 
                 
                 
@@ -765,53 +777,53 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 
         }
         
-    
-       
-        }
-        //========end of fun to Load categories============
+        
+        
+    }
+    //========end of fun to Load categories============
     
     
     //===================FUNCT TO LOAD FEATURED=====
-        func LoadFeatured() {
-            
-            
-            Alamofire.request(featuredLink, method: .get).validate().responseJSON { (response) in
-                
-                
-                guard response.result.isSuccess else {
-                                   print("Error with response: \(String(describing: response.result.error))")
-                                   return
-                               }
-                               
-                               guard let featuredDict = response.result.value as? Dictionary <String,AnyObject> else {
-                                   print("Error with dictionary: \(String(describing: response.result.error))")
-                                   return
-                               }
-                               
-                               guard let dicData = featuredDict["data"] as? [Dictionary <String,AnyObject>] else {
-                                   print("Error with dictionary data: \(String(describing: response.result.error))")
-                                   return
-                               }
-                
-                for featuredData in dicData {
-                    
-                    self.featuredTitle.append(featuredData["name"] as! String)
-                    self.featuredImage.append(featuredData["image"] as! String)
-                    //=======part for featured Thubnails
-                    
-                    
+    func LoadFeatured() {
         
-                }
-                
-                self.collectionView.reloadData()
+        
+        Alamofire.request(featuredLink, method: .get).validate().responseJSON { (response) in
+            
+            
+            guard response.result.isSuccess else {
+                print("Error with response: \(String(describing: response.result.error))")
                 return
+            }
+            
+            guard let featuredDict = response.result.value as? Dictionary <String,AnyObject> else {
+                print("Error with dictionary: \(String(describing: response.result.error))")
+                return
+            }
+            
+            guard let dicData = featuredDict["data"] as? [Dictionary <String,AnyObject>] else {
+                print("Error with dictionary data: \(String(describing: response.result.error))")
+                return
+            }
+            
+            for featuredData in dicData {
                 
-                
+                self.featuredTitle.append(featuredData["name"] as! String)
+                self.featuredImage.append(featuredData["image"] as! String)
+                //=======part for featured Thumbnails
                 
                 
                 
             }
-                   
+            
+            self.collectionView.reloadData()
+            return
+            
+            
+            
+            
+            
+        }
+        
         
     }
     //===========End of Load featured==============
@@ -854,7 +866,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             
         }
         
-        navBar.topItem!.title = "ichuzz2work.com"
+        navBar.topItem!.title = "ichuzz2work Services"
         
         horizontalcollectionView.backgroundColor = UIColor(named: "myGreenTint")
         

@@ -204,6 +204,7 @@
                         <outlet property="featuredButton" destination="lo5-Gb-UPR" id="4xg-kP-dFh"/>
                         <outlet property="horizontalcollectionView" destination="Osb-Ka-pYZ" id="LrO-DW-6sY"/>
                         <outlet property="navBar" destination="45I-OI-t0v" id="08n-rs-I9q"/>
+                        <outlet property="navBarTitle" destination="D9n-Yo-A57" id="vtQ-dc-pMX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
