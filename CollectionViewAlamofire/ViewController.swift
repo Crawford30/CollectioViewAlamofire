@@ -27,7 +27,9 @@ struct categoryID {
     var categoryID:    Int
     var categoryTitle: String
     var categoryImage: String
-
+    
+    
+    
 }
 
 
@@ -84,7 +86,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     //=========TITLES=======
     let navTitle = ["All services", "Featured Services", "Favourite servces"]
     
-   
+    //======================================MY CRAP===============
+    var services: [ Any ] = []  // holding  services
+    var catID:    [Int]   = []  // getting the categoryID to concatenate it with //======https://api.ichuzz2work.com/api/services/category
+    // eg, https://api.ichuzz2work.com/api/services/category/category_id ===Loads a service with that categoryid
     //=====================================================================
     
     var currentCategory: Int = 0 // Just making sure they are initialized
@@ -221,6 +226,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         print("Featured Button tapped")
         
         //======setting it title===
+       // self.navigationItem.title = navTitle[1]
           self.navBar.topItem!.title = navTitle[1]
         
         
@@ -364,6 +370,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         print("favourite Button tapped")
         
         //======setting it title=============================
+       // self.navigationItem.title = navTitle[2]
           self.navBar.topItem!.title = navTitle[2]
         
     }
@@ -394,8 +401,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             return
             
         }
-        
-        
         
         if categoriesArray[ indexPath.item ].categoryID == currentCategory {
         
@@ -651,7 +656,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     self.mainArray.append( tempID )
                     
                     self.serviceThumbnails.add("placeholder") // Replace later with actual UIImage
-                    
                     
                 }
                 
