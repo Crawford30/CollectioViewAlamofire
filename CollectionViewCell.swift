@@ -17,23 +17,7 @@ class CollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var bookNowButtonOutlet: UIButton!
     
-    
-    
-//     @IBAction func vCVShareButtonTapped(_ sender: UIButton) {
-//        
-//        let activityVC = UIActivityViewController(activityItems: ["servicelabel"], applicationActivities: nil)
-//        
-//        activityVC.popoverPresentationController?.sourceView = self.servicelabel
-//        self.present(activityVC, animated: true, completion: nil)
-//
-//
-//    
-//        
-//            
-//        }
 
-    
-    
     
 }
 

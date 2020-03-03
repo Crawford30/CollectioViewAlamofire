@@ -27,9 +27,7 @@ struct categoryID {
     var categoryID:    Int
     var categoryTitle: String
     var categoryImage: String
-    
-    
-    
+
 }
 
 
@@ -86,18 +84,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     //=========TITLES=======
     let navTitle = ["All services", "Featured Services", "Favourite servces"]
     
-    
-    
-    
-    
-    
-    
-    //======================================MY CRAP===============
-    var services: [ Any ] = [] //holding  services
-    var catID: [Int] = [] //getting the categoryID to concatenate it with //======https://api.ichuzz2work.com/api/services/category
-    // eg, https://api.ichuzz2work.com/api/services/category/category_id ===Loads a service with that categoryid
+   
     //=====================================================================
-    
     
     var currentCategory: Int = 0 // Just making sure they are initialized
     var currentSection:  Int = 0
@@ -106,12 +94,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     let categoryLink = "https://api.ichuzz2work.com/api/services/categories"
     
-    
     var categoryThumbnails: NSMutableArray = NSMutableArray()
     
     //==========For Services==================================================================================
     
-    let link = "https://api.ichuzz2work.com/api/services"
+    let servicesLink = "https://api.ichuzz2work.com/api/services"
     
     var serviceThumbnails: NSMutableArray = NSMutableArray()
     
@@ -120,10 +107,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var featuredTitle: [String] = []
     var featuredImage: [String] = []
     //=============================================================
-    
-    
-    
-    //==================================================================================
     
     let iPhone8PlusHeight: CGFloat = 736.0
     
@@ -161,6 +144,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         LoadServices()
         
         LoadFeatured()
+        
         //-----------------------------------------------------------------------------------------------------
         
         horizontalcollectionView.delegate   = self
@@ -199,7 +183,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         print("All ServicesAction Button tapped")
         
-        
         tabButtonMode = myTabButtons.tabAllServices.rawValue
         
         setTabBarButtonColors()
@@ -208,10 +191,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         horizontalcollectionView.isHidden = false   // Show Categories collectionView
         
-        
         //======set its navigation bar title
         self.navBar.topItem!.title = navTitle[0]
-        //self.navigationItem.title = navTitle[0]
         
     }
     
@@ -240,7 +221,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         print("Featured Button tapped")
         
         //======setting it title===
-       // self.navigationItem.title = navTitle[1]
           self.navBar.topItem!.title = navTitle[1]
         
         
@@ -384,7 +364,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         print("favourite Button tapped")
         
         //======setting it title=============================
-       // self.navigationItem.title = navTitle[2]
           self.navBar.topItem!.title = navTitle[2]
         
     }
@@ -410,124 +389,77 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     //========================added function===================
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        if ( collectionView == horizontalcollectionView ) {
-            
-            if indexPath.item == currentCategory {
-                // print(indexPath.item)
-                
-                return      // Do nothing if current Category is clicked
-                
-            } else {
-                
-                currentCategory = indexPath.item    // First things first
-                
-                // print("Category index \(String(currentCategory)) selected")
-                
-                // Empty array for Section images
-                
-                
-                
-                //=========want to get category id=====
-                //https://api.ichuzz2work.com/api/services/category
-                //https://api.ichuzz2work.com/api/services
-                
-                Alamofire.request("https://api.ichuzz2work.com/api/services", method: .get)
-                    .validate()
-                    .responseJSON { (response) in
-                        
-                        guard response.result.isSuccess else {
-                            print("Error with response: \(String(describing: response.result.error))")
-                            return
-                        }
-                        
-                        guard let dictservice = response.result.value as? Dictionary <String,AnyObject> else {
-                            print("Error with dictionary: \(String(describing: response.result.error))")
-                            return
-                        }
-                        
-                        guard let dictServiceData = dictservice["data"] as? [Dictionary <String,AnyObject>] else {
-                            print("Error with dictionary data: \(String(describing: response.result.error))")
-                            return
-                        }
-                        
-                        
-                        
-                        for currentCategoryID in dictServiceData {
-                            // print(indexPath.item)
-                            // print(currentService)
-                            
-                            
-                            //========GETTING THE CATEGORY ID=========
-                            self.catID.append(currentCategoryID["category_id"] as! Int)
-                            
-                            
-                            
-                            
-                            
-                            //======PASSING EACH CATEGORY ID AS A SEARCH PARAMETER TO LOAD ITS SERVICE DATA====
-                            
-                            //let articleTwo = NSHipster?.URLByAppendingPathComponent("ios9", isDirectory: true)
-                            //articleTwo now contains "http://nshipster.com/ios9/"
-                            
-                            
-                            
-                            //========THIS SHOULD GET THE category_id  and append to this link //https://api.ichuzz2work.com/api/services/category/(category_id) and loads the servic data for that link.
-                            
-                            let servicesAtCatID = "https://api.ichuzz2work.com/api/services/category/1"  //hardcoding, was trying to get a way of how i can get each category id from the catID array and append it to the link then make another call, seems not to get a good way of doing it.
-                            
-                            
-                            
-                            // let eachCatID  = (self.catID[indexPath.item])
-                            // let serviceAtCatIDURL = servicesAtCatID.URLByAppendingPathComponent(eachCatID)
-                            
-                            Alamofire.request(servicesAtCatID).responseJSON { (response) in
-                                
-                                guard response.result.isSuccess else {
-                                    print("Error with response: \(String(describing: response.result.error))")
-                                    return
-                                }
-                                
-                                guard let dictService = response.result.value as? Dictionary <String,AnyObject> else {
-                                    print("Error with dictionary: \(String(describing: response.result.error))")
-                                    return
-                                }
-                                
-                                
-                                
-                                
-                                
-                                guard let dictServiceData = dictService["data"] as? [Dictionary <String,AnyObject>] else {
-                                    print("Error with dictionary data: \(String(describing: response.result.error))")
-                                    return
-                                }
-                                
-                                for currentServices in dictServiceData {
-                                    print(currentServices)
-                                    
-                                    let id = currentServices["category_id"] as! Int
-                                    print(id)
-                                    
-                                    
-                                    // self.services.append(currentServices["category_id"])
-                                    
-                                }
-                                
-                                
-                            }
-                            
-                        }
-                        
-                        self.collectionView.reloadData()
-                        return
-                        
-                }
-                
-                
-                
-            }
+        if ( collectionView != horizontalcollectionView ) {
+         
+            return
             
         }
         
+        
+        
+        if categoriesArray[ indexPath.item ].categoryID == currentCategory {
+        
+            return
+            
+        }
+        
+        currentCategory = categoriesArray[ indexPath.item ].categoryID  // Translate to real Category ID
+        
+        self.navBar.topItem!.title = categoriesArray[ indexPath.item ].categoryTitle
+        
+        //=========want to get category id=====
+        //
+        //  https://api.ichuzz2work.com/api/services/category
+        //  https://api.ichuzz2work.com/api/services
+                
+        let servicesAtCatID = "https://api.ichuzz2work.com/api/services/category/\(String(currentCategory))"
+                
+        Alamofire.request(servicesAtCatID).responseJSON { (response) in
+        
+            guard response.result.isSuccess else {
+                print("Error with response: \(String(describing: response.result.error))")
+                return
+            }
+            
+            guard let dictService = response.result.value as? Dictionary <String,AnyObject> else {
+                print("Error with dictionary: \(String(describing: response.result.error))")
+                return
+            }
+            
+            guard let dictServiceData = dictService["data"] as? [Dictionary <String,AnyObject>] else {
+                print("Error with dictionary data: \(String(describing: response.result.error))")
+                return
+            }
+            
+            var tempID: serviceID
+            
+            self.mainArray = [] // Temporarily clear mainArray when loading new Sections
+            
+            self.serviceThumbnails.removeAllObjects()
+            
+            for serviceData in dictServiceData {
+                
+                tempID = serviceID.init(serviceID: 0, categoryID: 0, serviceTitle: "", serviceImage: "", serviceImageLink: "")
+                
+                tempID.categoryID   = self.currentCategory
+                
+                tempID.serviceID    = serviceData["id"]    as! Int
+                tempID.serviceImage = serviceData["image"] as! String
+                tempID.serviceTitle = serviceData["name"]  as! String
+                tempID.serviceImageLink = "Undetermined"
+                
+                self.mainArray.append( tempID )
+                
+                self.serviceThumbnails.add("placeholder") // Replace later with actual UIImage
+                
+            }
+            
+            self.collectionView.reloadData()
+            
+            return
+                
+        }
+                
     }
     
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
@@ -680,7 +612,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func LoadServices() {
         
-        Alamofire.request(link, method: .get)
+        Alamofire.request( servicesLink, method: .get )
             
             .validate()
             
@@ -719,6 +651,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     self.mainArray.append( tempID )
                     
                     self.serviceThumbnails.add("placeholder") // Replace later with actual UIImage
+                    
                     
                 }
                 
@@ -771,24 +704,25 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     
                 }
                 
+                self.categoriesArray.sort {         // Sort categoriesArray based on CategoryID
+                    
+                    $0.categoryID < $1.categoryID
+                
+                }
+
                 self.horizontalcollectionView.reloadData()
                 
                 return
                 
         }
         
-        
-        
     }
-    //========end of fun to Load categories============
     
+    //==========================================================================================================
     
-    //===================FUNCT TO LOAD FEATURED=====
     func LoadFeatured() {
         
-        
         Alamofire.request(featuredLink, method: .get).validate().responseJSON { (response) in
-            
             
             guard response.result.isSuccess else {
                 print("Error with response: \(String(describing: response.result.error))")
@@ -800,30 +734,18 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 return
             }
             
-            guard let dicData = featuredDict["data"] as? [Dictionary <String,AnyObject>] else {
+            guard let dictData = featuredDict["data"] as? [Dictionary <String,AnyObject>] else {
                 print("Error with dictionary data: \(String(describing: response.result.error))")
                 return
             }
             
-            for featuredData in dicData {
-                
-                self.featuredTitle.append(featuredData["name"] as! String)
-                self.featuredImage.append(featuredData["image"] as! String)
-                //=======part for featured Thumbnails
-                
-                
-                
-            }
+
             
             self.collectionView.reloadData()
+
             return
             
-            
-            
-            
-            
         }
-        
         
     }
     //===========End of Load featured==============
