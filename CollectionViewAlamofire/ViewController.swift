@@ -496,7 +496,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             } else {
                 
                 // Get Category image suffix to build URL
-              //  guard indexPath.item < self.categoriesArray.count else { return }
+             
                 
                 let Categoryimagestring = self.categoriesArray[indexPath.item].categoryImage
                 
@@ -514,30 +514,22 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                                 let scaledCategoryImage = categoryImage.af_imageScaled(to: self.horizontalCVCellSize )
                                 
                                 horizontalcell.categoryImageView?.image = scaledCategoryImage
-                                
-                                
-                                
-                                
-                                
                                 //=================SAFE UNWRAPPING==================
+                                
+                                  //=================TRYING TO DO SAFE UNWRAPPING, incase i have 10 cells, and only 9 categoryThumbnails avaliable, the 10Th cell would look for the 10th image which couldnot find it
+                                
+                                
                                  guard indexPath.item < self.categoryThumbnails.count else { return }
                                 
-                                self.categoryThumbnails.replaceObject( at: indexPath.item, with: scaledCategoryImage )
+                                
                                 
                                 // Replace placeholder string with actual image
-                                //self.categoryThumbnails.replaceObject( at: indexPath.item, with: scaledCategoryImage )
+                                self.categoryThumbnails.replaceObject( at: indexPath.item, with: scaledCategoryImage )
                                 
-                                //=================TRYING TO DO SAFE UNWRAPPING, incase i have 10 cells, and only 9 categoryThumbnails avaliable, the 10Th cell would look for the 10th image which couldnot find it
+                              
                                 
                                 
-//                                //=================SAFE UNWRAPPING==================
-//
-//                                if indexPath.item < self.categoryThumbnails.count {
-//                                    return
-//                                } else {
-//                                    self.categoryThumbnails.replaceObject( at: indexPath.item, with: scaledCategoryImage )
-//                                }
-                                
+                           
                                 
                             }
                             
@@ -609,8 +601,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                             
                             cell.serviceimage?.image = scaledImage
                             
-                             guard indexPath.item < self.serviceThumbnails.count else { return }
-                            // Replace placeholder string with actual image
+                            
+                            //==========SAFE UNWRAPPING=================
                             //guard indexPath.row < self.imageArray.count else { return }
                             //                            Your TableView number of rows in section must have the same value as your imageArray count. That signify : if you have 10 cells and only 9 images, the 10th cell would look for the 10th image which do not exist.
                             //
@@ -619,16 +611,17 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                             //                            if (indexPath.row < self.imageArray.count) { }
                             
                             
-//                            //==========================SAFE UNWRAPPING========
-//                            if indexPath.item < self.serviceThumbnails.count {
-//                                return
-//                            } else {
-//
-//                                self.serviceThumbnails.replaceObject( at: indexPath.item, with: scaledImage )
-//                            }
+                             guard indexPath.item < self.serviceThumbnails.count else { return }
+                            
+                            // Replace placeholder string with actual image
+                            
+                             self.serviceThumbnails.replaceObject( at: indexPath.item, with: scaledImage )
                             
                             
-                            self.serviceThumbnails.replaceObject( at: indexPath.item, with: scaledImage )
+
+                            
+                            
+                           
                             
                         }
                         
