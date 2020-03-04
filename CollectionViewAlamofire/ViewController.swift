@@ -226,8 +226,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         print("Featured Button tapped")
         
         //======setting it title===
-       // self.navigationItem.title = navTitle[1]
-          self.navBar.topItem!.title = navTitle[1]
+      
+        self.navBar.topItem!.title = navTitle[1]
         
         
         //===============GETTING THE FEATURED DATA========
@@ -370,8 +370,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         print("favourite Button tapped")
         
         //======setting it title=============================
-       // self.navigationItem.title = navTitle[2]
-          self.navBar.topItem!.title = navTitle[2]
+        
+        self.navBar.topItem!.title = navTitle[2]
         
     }
     
@@ -381,6 +381,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         //=======for horizonatl collection view=====
         if (collectionView == horizontalcollectionView) {
+            
             
             return categoryThumbnails.count
             
@@ -397,16 +398,18 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if ( collectionView != horizontalcollectionView ) {
-         
+            
             return
             
         }
         
-        if categoriesArray[ indexPath.item ].categoryID == currentCategory {
-        
+        if categoriesArray[ indexPath.item ].categoryID == currentCategory   {
+            
+            
             return
             
         }
+          
         
         currentCategory = categoriesArray[ indexPath.item ].categoryID  // Translate to real Category ID
         
@@ -416,11 +419,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         //
         //  https://api.ichuzz2work.com/api/services/category
         //  https://api.ichuzz2work.com/api/services
-                
-        let servicesAtCatID = "https://api.ichuzz2work.com/api/services/category/\(String(currentCategory))"
-                
-        Alamofire.request(servicesAtCatID).responseJSON { (response) in
         
+        let servicesAtCatID = "https://api.ichuzz2work.com/api/services/category/\(String(currentCategory))"
+        
+        Alamofire.request(servicesAtCatID).responseJSON { (response) in
+            
             guard response.result.isSuccess else {
                 print("Error with response: \(String(describing: response.result.error))")
                 return
@@ -439,6 +442,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             var tempID: serviceID
             
             self.mainArray = [] // Temporarily clear mainArray when loading new Sections
+            
+            //==============SAFE UNWRAPPING ============================
+            guard indexPath.item < self.serviceThumbnails.count else { return }
             
             self.serviceThumbnails.removeAllObjects()
             
@@ -462,9 +468,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             self.collectionView.reloadData()
             
             return
-                
+            
         }
-                
+        
     }
     
     //🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷🔷
@@ -490,6 +496,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             } else {
                 
                 // Get Category image suffix to build URL
+              //  guard indexPath.item < self.categoriesArray.count else { return }
+                
                 let Categoryimagestring = self.categoriesArray[indexPath.item].categoryImage
                 
                 //======replacing a space in a the image string====
@@ -507,8 +515,29 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                                 
                                 horizontalcell.categoryImageView?.image = scaledCategoryImage
                                 
-                                // Replace placeholder string with actual image
+                                
+                                
+                                
+                                
+                                //=================SAFE UNWRAPPING==================
+                                 guard indexPath.item < self.categoryThumbnails.count else { return }
+                                
                                 self.categoryThumbnails.replaceObject( at: indexPath.item, with: scaledCategoryImage )
+                                
+                                // Replace placeholder string with actual image
+                                //self.categoryThumbnails.replaceObject( at: indexPath.item, with: scaledCategoryImage )
+                                
+                                //=================TRYING TO DO SAFE UNWRAPPING, incase i have 10 cells, and only 9 categoryThumbnails avaliable, the 10Th cell would look for the 10th image which couldnot find it
+                                
+                                
+//                                //=================SAFE UNWRAPPING==================
+//
+//                                if indexPath.item < self.categoryThumbnails.count {
+//                                    return
+//                                } else {
+//                                    self.categoryThumbnails.replaceObject( at: indexPath.item, with: scaledCategoryImage )
+//                                }
+                                
                                 
                             }
                             
@@ -580,7 +609,25 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                             
                             cell.serviceimage?.image = scaledImage
                             
+                             guard indexPath.item < self.serviceThumbnails.count else { return }
                             // Replace placeholder string with actual image
+                            //guard indexPath.row < self.imageArray.count else { return }
+                            //                            Your TableView number of rows in section must have the same value as your imageArray count. That signify : if you have 10 cells and only 9 images, the 10th cell would look for the 10th image which do not exist.
+                            //
+                            //                            To be sure that the error does not appear anymore, just add the following if statement before setting your cell :
+                            //
+                            //                            if (indexPath.row < self.imageArray.count) { }
+                            
+                            
+//                            //==========================SAFE UNWRAPPING========
+//                            if indexPath.item < self.serviceThumbnails.count {
+//                                return
+//                            } else {
+//
+//                                self.serviceThumbnails.replaceObject( at: indexPath.item, with: scaledImage )
+//                            }
+                            
+                            
                             self.serviceThumbnails.replaceObject( at: indexPath.item, with: scaledImage )
                             
                         }
@@ -711,9 +758,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 self.categoriesArray.sort {         // Sort categoriesArray based on CategoryID
                     
                     $0.categoryID < $1.categoryID
-                
+                    
                 }
-
+                
                 self.horizontalcollectionView.reloadData()
                 
                 return
@@ -743,10 +790,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 return
             }
             
-
+            
             
             self.collectionView.reloadData()
-
+            
             return
             
         }
