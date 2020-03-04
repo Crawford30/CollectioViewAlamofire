@@ -28,7 +28,14 @@ struct categoryID {
     var categoryTitle: String
     var categoryImage: String
     
+}
+
+
+struct featuredID {
     
+    var featuredID:         Int
+    var featuredTitle:      String
+    var featuredImage:      String
     
 }
 
@@ -86,11 +93,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     //=========TITLES=======
     let navTitle = ["All services", "Featured Services", "Favourite servces"]
     
-    //======================================MY CRAP===============
-    var services: [ Any ] = []  // holding  services
-    var catID:    [Int]   = []  // getting the categoryID to concatenate it with //======https://api.ichuzz2work.com/api/services/category
-    // eg, https://api.ichuzz2work.com/api/services/category/category_id ===Loads a service with that categoryid
-    //=====================================================================
+    
     
     var currentCategory: Int = 0 // Just making sure they are initialized
     var currentSection:  Int = 0
@@ -107,10 +110,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     var serviceThumbnails: NSMutableArray = NSMutableArray()
     
-    //====================FEATURED====================
+    //====================FEATURED========================
     let featuredLink = "https://ichuzz2work.com/api/services/featured"
-    var featuredTitle: [String] = []
-    var featuredImage: [String] = []
+    var featuredArray: [ featuredID ] = [] //holding data for the featured
+    var featuredThumbnails: NSMutableArray = NSMutableArray()
+    
     //=============================================================
     
     let iPhone8PlusHeight: CGFloat = 736.0
@@ -226,7 +230,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         print("Featured Button tapped")
         
         //======setting it title===
-      
+        
         self.navBar.topItem!.title = navTitle[1]
         
         
@@ -236,6 +240,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             
             
         }
+        //=================================
         
         
     }
@@ -249,7 +254,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let localIndexPath    = IndexPath(row: whichService, section: 0)
         
         //=======================safe unwrapping====================
-        guard localIndexPath.row < self.mainArray.count else { return }
+        //guard localIndexPath.row < self.mainArray.count else { return }
         
         
         
@@ -390,12 +395,23 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             
             return categoryThumbnails.count
             
-        } else {
+        } else  if (collectionView != horizontalcollectionView){
             
             //=======for vertical collection view=====
             return serviceThumbnails.count
             
         }
+        
+            
+            
+    //======############################################################========================
+        //==========For feautured data to be displayed in vertical collection view==**************====
+        else {
+            return featuredThumbnails.count
+        }
+        //====================**************************================
+         //======############################################################=====
+        
         
     }
     
@@ -414,7 +430,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             return
             
         }
-          
+        
         
         currentCategory = categoriesArray[ indexPath.item ].categoryID  // Translate to real Category ID
         
@@ -482,7 +498,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        //===========for Horizontal collection view============
+        //===========for Horizontal collection view==============
         
         if ( collectionView == horizontalcollectionView ) {
             
@@ -519,18 +535,14 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                                 horizontalcell.categoryImageView?.image = scaledCategoryImage
                                 //=================SAFE UNWRAPPING==================
                                 
-                                  //=================TRYING TO DO SAFE UNWRAPPING, incase i have 10 cells, and only 9 categoryThumbnails avaliable, the 10Th cell would look for the 10th image which couldnot find it
-                                 guard indexPath.item < self.categoryThumbnails.count else { return }
+                                //=================TRYING TO DO SAFE UNWRAPPING, incase i have 10 cells, and only 9 categoryThumbnails avaliable, the 10Th cell would look for the 10th image which couldnot find it
+                                guard indexPath.item < self.categoryThumbnails.count else { return }
                                 
                                 
                                 
                                 // Replace placeholder string with actual image
                                 self.categoryThumbnails.replaceObject( at: indexPath.item, with: scaledCategoryImage )
-                                
-                              
-                                
-                                
-                           
+                            
                                 
                             }
                             
@@ -551,6 +563,17 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CollectionViewCell
         
+        
+        
+        //=====================TITLE FOR FEATURED========
+     //   cell.servicelabel.text   =     self.featuredArray[indexPath.item].featuredTitle
+        //===========================================================
+        
+        
+        
+        
+        
+        //==============================COLLECTION VIEW SERVICES==================
         cell.servicelabel.text               = self.mainArray[ indexPath.item ].serviceTitle
         cell.servicelabel.layer.cornerRadius = 6
         cell.servicelabel.clipsToBounds      = true
@@ -614,19 +637,74 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                             //                            if (indexPath.row < self.imageArray.count) { }
                             
                             
-                             guard indexPath.item < self.serviceThumbnails.count else { return }
+                            guard indexPath.item < self.serviceThumbnails.count else { return }
                             
                             // Replace placeholder string with actual image
                             
-                             self.serviceThumbnails.replaceObject( at: indexPath.item, with: scaledImage )
-                            
-                            
-
-                            
-                            
-                           
+                            self.serviceThumbnails.replaceObject( at: indexPath.item, with: scaledImage )
                             
                         }
+                        
+                        
+                        
+                    }
+                    
+                }
+                
+                
+                
+                
+                
+                
+                
+                //======############################################################=====
+                
+                //=============FOR FEATURED SERVICES=================
+                if featuredThumbnails.object(at: indexPath.item) is UIImage {
+                    
+                    // ❌❌❌❌❌  DO NOT DOWNLOAD AND SCALE THE IMAGE IF WE ALREADY HAVE IT  ❌❌❌❌❌
+                    
+                    cell.serviceimage.image = featuredThumbnails.object( at: indexPath.item ) as? UIImage
+                    
+                    print("Image retrieved from featuredThumbnails array") // Remove this
+                    
+                } else {
+                    
+                    
+                    
+                    //=======Getting the featured image ====================
+                     let featuredImageString = self.featuredArray[ indexPath.item ].featuredImage
+                    
+                    //======replacing a space in an image URL with %20=========
+                    let newFeaturedString   = featuredImageString.replacingOccurrences(of: " ", with: "%20", options: .literal, range: nil)
+                    
+                    
+                    if let featuredImageUrl = newFeaturedString as? String {
+                        //=====make request to get featured image from the server ====
+                        
+                        Alamofire.request("https://api.ichuzz2work.com/" + featuredImageUrl).responseImage { (response) in
+                            
+                            if let featuredImage =  response.result.value {
+                                DispatchQueue.main.async {
+                                    
+                                    //scale the size disregarding the aspect ratio
+                                    let scaledImage = featuredImage.af_imageScaled(to: self.myCellSize)
+                                    
+                                    cell.serviceimage?.image = scaledImage
+                                    
+                                    //=========SAFE UNWRAPPING======
+                                    guard indexPath.item < self.featuredThumbnails.count else { return }
+                                    
+                                    // Replace placeholder string with actual image
+                                                               
+                                    self.featuredThumbnails.replaceObject( at: indexPath.item, with: scaledImage )
+                                    
+                                }
+                            }
+                            
+                        }
+                        
+                        
                         
                     }
                     
@@ -701,6 +779,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     self.serviceThumbnails.add("placeholder") // Replace later with actual UIImage
                     
                 }
+                
+                
                 
                 self.collectionView.reloadData()
                 
@@ -786,7 +866,31 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 return
             }
             
+            var tempID: featuredID
+            self.featuredArray = []  // making sure its empty
+           
+    
+            for featuredData in dictData {
+                tempID = featuredID.init(featuredID: 0, featuredTitle: "", featuredImage: "")
+                
+                tempID.featuredID = featuredData["id"]               as! Int
+                tempID.featuredTitle = featuredData["name"]         as! String
+                tempID.featuredImage  = featuredData["image"]       as! String
+                
+                
+                self.featuredArray.append(tempID)
+                
+                self.featuredThumbnails.add("placeholder") // Replace later with actual UIImage
+                
+            }
             
+            
+//             // Sort featuredArray based on featuredID
+//            self.featuredArray.sort {
+//
+//                $0.featuredID < $1.featuredID
+//
+//            }
             
             self.collectionView.reloadData()
             
