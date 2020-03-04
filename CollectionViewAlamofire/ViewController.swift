@@ -248,6 +248,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         let localIndexPath    = IndexPath(row: whichService, section: 0)
         
+        //=======================safe unwrapping====================
+        guard localIndexPath.row < self.mainArray.count else { return }
+        
+        
+        
         if isFavourite(theID: mainArray[ whichService ] ) {
             
             removeFavourite( theID: mainArray[ whichService ] )
@@ -496,8 +501,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             } else {
                 
                 // Get Category image suffix to build URL
-             
-                
                 let Categoryimagestring = self.categoriesArray[indexPath.item].categoryImage
                 
                 //======replacing a space in a the image string====
@@ -517,8 +520,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                                 //=================SAFE UNWRAPPING==================
                                 
                                   //=================TRYING TO DO SAFE UNWRAPPING, incase i have 10 cells, and only 9 categoryThumbnails avaliable, the 10Th cell would look for the 10th image which couldnot find it
-                                
-                                
                                  guard indexPath.item < self.categoryThumbnails.count else { return }
                                 
                                 
@@ -558,6 +559,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         cell.bookNowButtonOutlet.clipsToBounds      = true
         cell.bookNowButtonOutlet.tag                = myTags.cellBookNow.rawValue + indexPath.item
         
+        
         if isFavourite(theID: mainArray[ indexPath.item ] ) {
             
             cell.favouriteBtn.setImage(UIImage(named:"redHeart"), for: .normal)
@@ -567,6 +569,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             cell.favouriteBtn.setImage(UIImage(named:"whiteHeart"), for: .normal)
             
         }
+        
         
         cell.favouriteBtn.tag = myTags.cellFavourites.rawValue + indexPath.item
         cell.shareBtn.tag     = myTags.cellShare.rawValue      + indexPath.item
@@ -602,7 +605,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                             cell.serviceimage?.image = scaledImage
                             
                             
-                            //==========SAFE UNWRAPPING=================
+                            //==========SAFE UNWRAPPING====================
                             //guard indexPath.row < self.imageArray.count else { return }
                             //                            Your TableView number of rows in section must have the same value as your imageArray count. That signify : if you have 10 cells and only 9 images, the 10th cell would look for the 10th image which do not exist.
                             //
